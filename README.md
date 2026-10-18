@@ -120,11 +120,11 @@ Faedra/
 ### 1. Get the project
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/urasec-labs/Faedra
 cd Faedra
 ```
 
-Replace `<YOUR_REPOSITORY_URL>` with the actual repository URL. If you downloaded the source archive, extract it and enter the `Faedra` directory.
+Replace `https://github.com/urasec-labs/Faedra` with the actual repository URL. If you downloaded the source archive, extract it and enter the `Faedra` directory.
 
 ### 2. Install system tools
 
