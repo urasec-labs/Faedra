@@ -19,6 +19,11 @@ Results are stored as structured data and exported to **HTML**, **PDF**, and **J
 
 ---
 
+## Demo
+
+<video src="docs/faedra_intro.mp4" controls width="100%"></video>
+
+---
 ## Features
 
 | Area | Capabilities |
