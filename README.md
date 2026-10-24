@@ -1,3 +1,4 @@
+⭐ **If you like this project, please consider giving it a star to support young open-source developers!**
 # Faedra
 
 **Modular security assessment toolkit for authorized reconnaissance.**
