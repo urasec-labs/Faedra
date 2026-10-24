@@ -20,15 +20,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
-
-ADDITIONAL TERMS FOR SECURITY TOOLS:
-
-This software is provided for educational and authorized testing purposes only.
-Users must comply with all applicable laws and regulations. Unauthorized access
-to computer systems is illegal. The authors assume no liability for misuse of
-this software.
-
-Users are solely responsible for obtaining proper authorization before testing
-any systems and ensuring compliance with all applicable laws and ethical
-standards.
+IMPORTANT: This tool is for authorized security testing and educational
+purposes only. Unauthorized use against systems you do not own or do not have
+explicit permission to test is illegal.

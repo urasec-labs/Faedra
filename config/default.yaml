@@ -1,0 +1,104 @@
+# Faedra Pro - Default Configuration
+# Author: Uras AKAS | urasakas.com
+
+app:
+  name: "Faedra Pro"
+  version: "2.1.0"
+  author: "Uras AKAS | urasakas.com"
+  safe_mode: true
+
+paths:
+  data_dir: "data"
+  assets_dir: "data/assets"
+  reports_dir: "data/reports"
+  logs_dir: "data/logs"
+  db_path: "data/db/faedra.db"
+
+scan:
+  timeout: 300
+  max_concurrent: 12
+  rate_limit_delay: 0.4
+  user_agent: "FaedraPro/2.1 (+https://urasakas.com; authorized-security-research)"
+  respect_robots: true
+
+modules:
+  passive_recon: true
+  asset_inventory: true
+  bug_bounty: true
+  osint_footprint: true
+  pentest: true
+  cloud_secrets: true
+  api_security: true
+  auth_session: true
+  stealth: true
+  compliance: true
+  notification: true
+  ai_analysis: true
+  container_config: true
+
+profiles:
+  quick:
+    description: "Fast passive + light active recon"
+    modules:
+      - stealth
+      - passive_recon
+      - asset_inventory
+      - osint_footprint
+      - ai_analysis
+  bugbounty:
+    description: "Full bug bounty oriented pipeline"
+    modules:
+      - stealth
+      - passive_recon
+      - asset_inventory
+      - bug_bounty
+      - osint_footprint
+      - api_security
+      - cloud_secrets
+      - auth_session
+      - container_config
+      - ai_analysis
+      - compliance
+      - notification
+  deep:
+    description: "Deep authorized assessment"
+    modules:
+      - stealth
+      - passive_recon
+      - asset_inventory
+      - bug_bounty
+      - osint_footprint
+      - pentest
+      - api_security
+      - cloud_secrets
+      - auth_session
+      - container_config
+      - ai_analysis
+      - compliance
+      - notification
+  monitor:
+    description: "Continuous monitoring mode"
+    modules:
+      - passive_recon
+      - asset_inventory
+      - notification
+
+notification:
+  enabled: false
+  discord_webhook: ""
+  telegram_bot_token: ""
+  telegram_chat_id: ""
+  slack_webhook: ""
+
+apis:
+  shodan: ""
+  censys_api_id: ""
+  censys_api_secret: ""
+  securitytrails: ""
+  openai_compatible: ""
+
+stealth:
+  enabled: true
+  randomize_ua: true
+  proxy: null
+  max_requests_per_second: 5
