@@ -1,119 +1,97 @@
-<div align="center">
+# Faedra
 
-<a href="https://github.com/urasec-labs">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:101820,45:243B53,100:00D4AA&height=220&section=header&text=FAEDRA&fontSize=72&fontColor=F4F7FA&fontAlignY=38&desc=Recon%20%2F%20Security%20Assessment%20Framework&descSize=17&descAlignY=60&animation=fadeIn" width="100%" alt="Faedra — Recon and Security Assessment Framework banner"/>
-</a>
+**Modular security assessment toolkit for authorized reconnaissance.**
 
-<br/>
-
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=17&duration=2800&pause=900&color=00D4AA&center=true&vCenter=true&width=700&lines=Map+the+surface.+Understand+the+risk.;A+modular+Python-based+security+assessment+toolkit.;Built+for+authorized+testing+and+learning." alt="Animated Faedra tagline"/>
-
-<br/>
-
-[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Platform](https://img.shields.io/badge/Platform-Linux-24292F?style=for-the-badge&logo=linux&logoColor=white)](https://www.linux.org/)
-[![License](https://img.shields.io/badge/License-MIT-00D4AA?style=for-the-badge)](LICENSE)
-[![Status](https://img.shields.io/badge/Project-Experimental-F0B429?style=for-the-badge)](#project-status)
-
-**Faedra** is a modular Python toolkit for authorized reconnaissance and security assessment. It brings network scanning, web vulnerability checks, CVE lookups, risk prioritization, result storage, and PDF reporting into one CLI workflow.
-
-[Features](#features) · [Architecture](#workflow) · [Installation](#installation) · [Usage](#usage) · [Safety](#responsible-use)
-
-</div>
+[Features](#features) · [Architecture](#architecture) · [Installation](#installation) · [Usage](#usage) · [Configuration](#configuration) · [Responsible use](#responsible-use)
 
 ---
 
 ## Overview
 
-Security findings are easier to act on when they are collected, organized, and explained in one place. Faedra aims to connect common assessment stages in a single command-line workflow, with results stored for later review and reports generated for documentation.
+Faedra connects common assessment stages into a single workflow: passive and active reconnaissance, asset inventory, web and API checks, secrets detection, prioritization, and reporting.
 
-> **Project scope:** this is an experimental security assessment framework. Tool availability, target configuration, permissions, and individual module behavior can affect results. Always validate findings independently.
+Results are stored as structured data and exported to **HTML**, **PDF**, and **JSON**. An interactive CLI menu is available for day-to-day use; subcommands remain available for scripting.
+
+> **Project scope**  
+> This is an experimental security assessment framework. Tool availability, target configuration, permissions, and individual module behavior can affect results. Always validate findings independently.
+
+**Author:** [Uras AKAS](https://urasakas.com) · **Lab:** [urasec-labs](https://github.com/urasec-labs)
+
+---
 
 ## Features
 
-<table>
-<tr>
-<td width="50%" valign="top">
+| Area | Capabilities |
+|------|----------------|
+| **Passive recon** | DNS, Certificate Transparency (crt.sh), HackerTarget, AlienVault OTX, Wayback CDX, WHOIS; optional **subfinder** / **amass** |
+| **Asset inventory** | Persistent tracking of discovered assets with new / disappeared detection |
+| **Bug bounty pipeline** | Live host probing (**httpx**), light path discovery, optional **ffuf** and **nuclei** |
+| **OSINT & footprint** | WAF/CDN hints, security headers, tech disclosure; optional **wafw00f** / **whatweb** |
+| **Pentest** | Controlled **nmap** scanning; optional **naabu** fallback |
+| **Cloud & secrets** | High-signal secret patterns, optional **gitleaks**, sensitive path checks |
+| **API security** | OpenAPI/Swagger discovery, GraphQL + introspection checks |
+| **Auth & session** | Login form discovery, cookie flag analysis |
+| **Container & config** | Header/misconfig checks, exposure paths; optional **nikto** |
+| **Analysis** | Severity-based prioritization, OWASP-oriented mapping |
+| **Reporting** | HTML + PDF + JSON reports; local web dashboard |
+| **Operations** | Safe mode by default, interactive menu, profile presets, stealth helpers |
 
-### Network reconnaissance
-- Nmap integration for host, port, and service discovery
-- Service and version information collection
-- Scan options exposed through the CLI
+---
 
-</td>
-<td width="50%" valign="top">
+## Architecture
 
-### Web checks and CVE context
-- Optional Nikto and SQLMap integration
-- CVE lookup through configured public APIs
-- Cached lookup results where supported
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### Risk and reporting
-- Risk scoring with configurable thresholds
-- PDF assessment report generation
-- SQLite storage for scan history and findings
-
-</td>
-<td width="50%" valign="top">
-
-### Operational visibility
-- Console status output and logs
-- Configurable safe-mode defaults
-- Separate modules for scanning, risk, CVEs, storage, and reporting
-
-</td>
-</tr>
-</table>
-
-## Workflow
-
-<div align="center">
-
-```text
-  TARGET
-    │
-    ▼
-  RECONNAISSANCE ──► WEB CHECKS (optional)
-    │                       │
-    └───────────┬───────────┘
-                ▼
-          CVE ENRICHMENT
-                │
-                ▼
-          RISK PRIORITIZATION
-                │
-                ▼
-        SQLITE + PDF REPORT
 ```
-
-</div>
+                    TARGET
+                      │
+          ┌───────────┴───────────┐
+          ▼                       ▼
+   PASSIVE RECON            STEALTH / CONFIG
+   (CT, OTX, subfinder…)           │
+          │                       │
+          └───────────┬───────────┘
+                      ▼
+              ASSET INVENTORY
+                      │
+        ┌─────────────┼─────────────┐
+        ▼             ▼             ▼
+   BUG BOUNTY    OSINT/WAF     PENTEST (nmap)
+   (httpx/ffuf/  (headers/     API / AUTH
+    nuclei)       wafw00f)     SECRETS / CONFIG
+        │             │             │
+        └─────────────┴─────────────┘
+                      ▼
+            PRIORITIZATION + COMPLIANCE
+                      │
+                      ▼
+              HTML / PDF / JSON
+                 + DASHBOARD
+```
 
 ### Project structure
 
-```text
-Faedra/
-├── main.py                 # CLI entry point and workflow orchestration
-├── faedra.sh               # Shell launcher
-├── install.sh              # Setup helper
-├── config.json             # Scan, risk, reporting, and logging settings
-├── requirements.txt        # Python dependencies
-├── modules/
-│   ├── scanner.py          # Network scanning integration
-│   ├── vuln_scanner.py     # Web vulnerability checks
-│   ├── cve_lookup.py       # CVE information lookup
-│   ├── risk_engine.py      # Risk prioritization
-│   ├── exploit_engine.py   # Exploitation-related module
-│   ├── database.py         # SQLite persistence
-│   └── pdf_report.py       # PDF report generation
-├── reports/                # Generated reports
-├── logs/                   # Runtime logs
-└── DISCLAIMER.md            # Legal and safety notes
 ```
+Faedra-Pro/
+├── faedra.py                 # CLI entry (interactive menu + subcommands)
+├── dashboard.py              # Local report dashboard
+├── config/default.yaml       # Profiles, scan, stealth, notifications
+├── requirements.txt
+├── core/
+│   ├── orchestrator.py       # Module runner and job aggregation
+│   ├── models.py             # Asset, Finding, ScanJob schemas
+│   ├── plugin_base.py        # Module interface
+│   ├── config.py             # Config loader
+│   └── report.py             # HTML + PDF generators
+├── modules/                  # Built-in analysis modules
+├── utils/                    # HTTP helpers, external tool detection
+├── data/
+│   ├── assets/               # Persistent inventories
+│   ├── reports/              # Generated reports
+│   └── logs/
+├── DISCLAIMER.md
+└── LICENSE
+```
+
+---
 
 ## Installation
 
@@ -124,128 +102,167 @@ git clone https://github.com/urasec-labs/Faedra
 cd Faedra
 ```
 
-Replace `https://github.com/urasec-labs/Faedra` with the actual repository URL. If you downloaded the source archive, extract it and enter the `Faedra` directory.
+If you use a source archive, extract it and enter the project directory.
 
-### 2. Install system tools
-
-Faedra integrates with external security utilities. Install only the tools you intend to use and follow their official installation instructions. Depending on your chosen modules, this may include:
-
-- Python 3.8 or newer
-- Nmap
-- Nikto (optional web checks)
-- SQLMap (optional web checks)
-- Metasploit Framework (optional; review the module's behavior before enabling it)
-
-### 3. Create an isolated Python environment
+### 2. Python environment
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Check the CLI
+Requires **Python 3.10+** (3.12 tested).
+
+### 3. Optional external tools
+
+Faedra runs without them; missing tools are skipped. Install only what you need:
+
+| Tool | Role |
+|------|------|
+| nmap | Port / service scan |
+| naabu | Port scan fallback |
+| subfinder / amass | Subdomain enumeration |
+| httpx (ProjectDiscovery) | HTTP probing |
+| ffuf | Directory discovery |
+| nuclei | Template-based checks |
+| gitleaks | Secrets scanning |
+| wafw00f / whatweb | WAF / tech fingerprint |
+| nikto | Web misconfiguration scan |
+
+Check what is available:
 
 ```bash
-python3 main.py --help
-python3 main.py --version
+python faedra.py tools
 ```
 
-If your copy includes the installation helper, review its contents before running it. Do not execute scripts from a repository you have not inspected.
+---
 
 ## Usage
 
-**Start with a system you own or a deliberately configured lab target.** `127.0.0.1` refers to your own machine.
+**Only test systems you own or have explicit authorization to assess.**
+
+### Interactive menu (recommended)
 
 ```bash
-# Basic assessment against your own local machine
-python3 main.py --target 127.0.0.1
+python faedra.py
 ```
+
+```
+Ana Menü
+
+1  Hızlı Recon          (quick)
+2  Bug Bounty Tarama    (bugbounty)
+3  Derin Analiz         (deep)
+4  Sürekli İzleme       (monitor)
+5  Modülleri Listele
+6  Dış Araç Durumu
+7  Web Dashboard
+8  Özel Modül Seçimi
+0  Çıkış
+```
+
+### Command-line mode
 
 ```bash
-# Skip web checks
-python3 main.py --target 127.0.0.1 --skip-web
+# Quick passive + light footprint
+python faedra.py recon example.com
+
+# Bug bounty oriented pipeline
+python faedra.py full example.com --profile bugbounty
+
+# Deep assessment (authorized targets only)
+python faedra.py full example.com --profile deep --no-safe
+
+# List modules / tools
+python faedra.py modules
+python faedra.py tools
+
+# Local dashboard for reports
+python faedra.py dashboard
+# → http://127.0.0.1:8787
 ```
 
-```bash
-# Skip the exploitation-related stage
-python3 main.py --target 127.0.0.1 --skip-exploit
-```
+### Profiles
 
-```bash
-# Add an assessor label to generated output
-python3 main.py --target 127.0.0.1 --tester-name "Local Lab"
-```
+| Profile | Intent |
+|---------|--------|
+| `quick` | Passive recon + inventory + footprint |
+| `bugbounty` | Full recon, live hosts, API, secrets, config |
+| `deep` | Includes controlled port scanning |
+| `monitor` | Periodic inventory / change detection |
 
-View all available arguments:
+Safe mode is **enabled by default**. Aggressive steps (full ffuf, nikto, broad port scans) stay limited until you explicitly disable it with authorization.
 
-```bash
-python3 main.py --help
-```
+---
 
-### CLI options
+## Configuration
 
-| Option | Purpose |
-|---|---|
-| `-t`, `--target` | Required target IP address or domain |
-| `-n`, `--tester-name` | Assessor label used in output |
-| `--skip-web` | Skip web vulnerability scanning |
-| `--skip-exploit` | Skip the exploitation-related stage |
-| `--no-safe-mode` | Disables safe mode; **not recommended** |
-| `--version` | Print the application version |
+Primary config: `config/default.yaml`
 
-Exact behavior depends on the current code and installed external tools. Review `config.json`, `DISCLAIMER.md`, and the relevant module before running an assessment.
+| Section | Purpose |
+|---------|---------|
+| `app.safe_mode` | Global safe-mode default |
+| `scan` | Timeouts, concurrency, user-agent |
+| `profiles` | Module lists per profile |
+| `stealth` | UA rotation, rate limit, proxy |
+| `notification` | Discord / webhook hooks |
+| `apis` | Optional API keys (Shodan, Censys, …) |
+| `paths` | assets / reports / logs / db locations |
 
-## Configuration and outputs
+### Outputs
 
-`config.json` contains settings for scan behavior, CVE lookups, risk thresholds, reporting, database storage, and logging.
+| Path | Content |
+|------|---------|
+| `data/reports/` | HTML, PDF, JSON reports |
+| `data/assets/` | Persistent asset inventories |
+| `data/logs/` | Runtime logs |
 
-| Path | Purpose |
-|---|---|
-| `reports/` | Generated reports |
-| `logs/` | Runtime logs |
-| `database/` | SQLite data (created as needed) |
-| `exploits/` | Exploit-related artifacts, if generated |
+Treat reports and inventories as sensitive. They may contain hostnames, paths, and vulnerability details.
 
-Treat reports, logs, and databases as sensitive: they may contain hostnames, IP addresses, service details, and vulnerability information. Store and share them only with authorized people.
+---
 
 ## Responsible use
 
 Faedra is intended for **authorized security testing, controlled labs, and education**.
 
-- Test only systems you own or have explicit permission to assess.
-- Confirm the written scope, permitted techniques, and testing window before starting.
-- Start with non-invasive options and understand what each module does.
-- Do not disable safe mode unless you understand the consequences and have explicit authorization.
-- Validate findings manually; automated checks can produce false positives and false negatives.
-- Follow applicable laws, program rules, and the repository's `DISCLAIMER.md`.
+- Test only systems you own or have **explicit written permission** to assess.
+- Confirm scope, permitted techniques, and testing window before starting.
+- Prefer non-invasive options first; understand each module before enabling aggressive modes.
+- Do not disable safe mode unless you understand the impact and are authorized.
+- Validate findings manually — automation produces false positives and false negatives.
+- Follow applicable laws, program rules, and [`DISCLAIMER.md`](DISCLAIMER.md).
 
-**You are responsible for your use of this software.** The presence of a feature does not imply permission to use it against a particular target.
-
-## Project status
-
-Faedra is provided as-is for learning and experimentation. It should not be treated as a certified scanner or a substitute for a professional security review. Before production use, add and run automated tests, review third-party tool invocation and input validation, and verify that safe-mode behavior is enforced consistently.
-
-## Contributing
-
-Contributions that improve reliability, documentation, test coverage, accessibility, and safe defaults are welcome.
-
-1. Open an issue describing the problem or proposed improvement.
-2. Keep changes focused and document any behavior changes.
-3. Add tests where practical.
-4. Never include real credentials, private targets, customer data, or sensitive scan results in issues or pull requests.
-
-## License
-
-This project includes a `LICENSE` file. Review it for the exact license terms before redistributing or modifying the project.
+**You are responsible for your use of this software.** The presence of a feature does not imply permission to use it against a given target.
 
 ---
 
-<div align="center">
+## Project status
+
+Faedra is provided as-is for learning, lab work, and authorized assessments. It is not a certified scanner and is not a substitute for a professional security review.
+
+Before any production-facing use: review third-party tool invocations, confirm safe-mode enforcement, and validate results on known targets.
+
+---
+
+## Contributing
+
+Improvements to reliability, documentation, tests, and safe defaults are welcome.
+
+1. Open an issue describing the problem or proposal.
+2. Keep changes focused; document behavior changes.
+3. Add tests where practical.
+4. Never include real credentials, private targets, or sensitive scan output in issues or PRs.
+
+---
+
+## License
+
+See [`LICENSE`](LICENSE) for terms (MIT). Review it before redistribution or modification.
+
+---
 
 **FAEDRA** · Reconnaissance with context. Findings with purpose.
 
-<sub>Animated header and typing text are loaded from external services; GitHub may not render every animation in every context.</sub>
-
-</div>
+[urasakas.com](https://urasakas.com) · [urasec-labs](https://github.com/urasec-labs)
